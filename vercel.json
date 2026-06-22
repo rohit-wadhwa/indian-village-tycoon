@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "name": "indian-village-tycoon",
+  "builds": [{ "src": "index.html", "use": "@vercel/static" }],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Pragma", "value": "no-cache" },
+        { "key": "Expires", "value": "0" }
+      ]
+    }
+  ]
+}
