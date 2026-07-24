@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
 <meta name="theme-color" content="#1a6b38"/>
-<title>Indian Village Tycoon v1.3</title>
+<title>Indian Village Tycoon v2.1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
@@ -42,8 +42,18 @@ html,body{height:100%;overflow:hidden;background:#0e1a12;font-family:'Baloo 2',s
 #xpfill{height:100%;background:linear-gradient(90deg,#22c55e,#86efac);width:0%;transition:width .3s}
 
 /* orders panel */
-#orders{position:absolute;bottom:max(52px,env(safe-area-inset-bottom)+46px);left:0;right:0;
-  padding:0 8px;display:flex;flex-direction:column;gap:5px;pointer-events:none}
+#ordersWrap{position:fixed;left:50%;transform:translateX(-50%);
+  bottom:56px;width:100%;max-width:440px;
+  display:flex;flex-direction:column;align-items:stretch;gap:5px;pointer-events:none;z-index:8}
+#ordersTab{pointer-events:auto;align-self:center;cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:#ffd24a;
+  background:linear-gradient(160deg,rgba(28,44,32,.96),rgba(12,22,14,.96));
+  border:2px solid rgba(255,210,74,.35);border-radius:14px;padding:5px 14px;
+  box-shadow:0 3px 0 rgba(0,0,0,.4)}
+#ordersTab .chev{font-size:10px;transition:transform .2s}
+#orders{display:flex;flex-direction:column;gap:5px;padding:0 8px;pointer-events:none;
+  transition:opacity .2s}
+#ordersWrap.collapsed #orders{display:none}
 .order-card{background:linear-gradient(135deg,rgba(18,32,22,.97),rgba(10,20,12,.97));
   border:2px solid rgba(255,255,255,.12);border-radius:13px;padding:8px 10px;
   display:flex;align-items:center;gap:8px;position:relative;overflow:hidden}
@@ -129,6 +139,12 @@ h1 .sub{display:block;font-size:clamp(13px,3vw,18px);color:#ffe39a;letter-spacin
   padding:4px 10px;font-size:11px;font-weight:800;font-family:inherit;cursor:pointer;
   background:rgba(255,255,255,.07);color:#c8f0c8;white-space:nowrap}
 .vbtn:active{background:rgba(255,255,255,.18)}
+#bmcBtn{pointer-events:auto;display:inline-flex;align-items:center;gap:4px;
+  text-decoration:none;border-radius:12px;padding:4px 10px;font-size:11px;font-weight:800;
+  font-family:inherit;white-space:nowrap;color:#1a1a1a;
+  background:linear-gradient(135deg,#ffdd00,#ffaa00);
+  border:none;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+#bmcBtn:active{opacity:.8}
 /* ── CONFIRM OVERLAY ─────────────────────────────── */
 #confirmOverlay{position:fixed;inset:0;z-index:50;display:none;align-items:center;
   justify-content:center;background:rgba(0,0,0,.72)}
@@ -183,6 +199,43 @@ h1 .sub{display:block;font-size:clamp(13px,3vw,18px);color:#ffe39a;letter-spacin
 #planClose{width:100%;margin-top:8px;padding:13px;border-radius:14px;border:none;
   background:rgba(255,255,255,.08);color:#fff;font-size:15px;font-weight:800;
   font-family:inherit;cursor:pointer}
+.plan-action{width:100%;margin-top:6px;padding:11px;border-radius:12px;border:none;cursor:pointer;
+  font-family:inherit;font-size:14px;font-weight:800;
+  background:linear-gradient(180deg,#37c46a,#1f9a4e);color:#06310f;box-shadow:0 4px 0 #14702f;transition:transform .06s}
+.plan-action:active{transform:translateY(2px);box-shadow:0 2px 0 #14702f}
+.plan-action:disabled{opacity:.45;box-shadow:0 4px 0 #2a2a2a;cursor:default;color:#cfe9d6}
+
+/* ── HOW TO PLAY ─────────────────────────────────── */
+#howOverlay{position:fixed;inset:0;z-index:47;display:none;align-items:center;
+  justify-content:center;background:rgba(0,0,0,.82)}
+#howOverlay.show{display:flex;animation:fadein .3s ease}
+#howBox{background:linear-gradient(160deg,#1f3a28,#0e1a12);
+  border:2px solid rgba(255,210,74,.4);border-radius:22px;padding:20px 18px;
+  max-width:380px;width:92%;max-height:84vh;overflow-y:auto;
+  box-shadow:0 0 60px rgba(255,200,50,.15)}
+.how-h{font-size:21px;font-weight:800;color:#ffd24a;text-align:center;margin-bottom:3px}
+.how-sub{font-size:12px;color:#86a886;text-align:center;margin-bottom:16px;font-weight:600}
+.how-row{display:flex;gap:11px;align-items:flex-start;margin-bottom:11px}
+.how-row .hi{font-size:21px;min-width:26px;text-align:center;line-height:1.2}
+.how-row .ht{font-size:13px;color:#d8f0c8;font-weight:600;line-height:1.45}
+.how-row .ht b{color:#ffd24a}
+#howClose{width:100%;margin-top:8px;padding:13px;border-radius:13px;border:none;cursor:pointer;
+  font-family:inherit;font-size:15px;font-weight:800;background:linear-gradient(180deg,#ffd24a,#f7a516);
+  color:#3a2400;box-shadow:0 5px 0 #b9760a;transition:transform .06s}
+#howClose:active{transform:translateY(3px);box-shadow:0 2px 0 #b9760a}
+
+/* ── SETTINGS ────────────────────────────────────── */
+#setOverlay{position:fixed;inset:0;z-index:48;display:none;align-items:center;
+  justify-content:center;background:rgba(0,0,0,.82)}
+#setOverlay.show{display:flex;animation:fadein .3s ease}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:rgba(255,255,255,.06);border-radius:12px;padding:11px 13px;margin-bottom:8px;
+  border:1.5px solid rgba(255,255,255,.08)}
+.set-row .sl{font-size:14px;font-weight:800;color:#fff}
+.set-row .set-sub{font-size:11px;font-weight:600;color:#9fc39f;margin-top:2px}
+.set-toggle{min-width:60px;padding:9px 12px;border-radius:10px;border:none;cursor:pointer;
+  font-family:inherit;font-size:13px;font-weight:800;background:#444f59;color:#cfd6dd}
+.set-toggle.on{background:linear-gradient(180deg,#37c46a,#1f9a4e);color:#06310f}
 </style>
 </head>
 <body>
@@ -196,14 +249,19 @@ h1 .sub{display:block;font-size:clamp(13px,3vw,18px);color:#ffe39a;letter-spacin
       <div class="pill"><span class="coin">₹</span><span id="money">0</span></div>
       <div class="pill2">🎒 <span id="pack">0/12</span></div>
       <div class="pill2"><span id="wIcon">☀️</span><span id="wMkt" style="font-size:12px">×1.00</span></div>
+      <div class="pill2" id="goalPill" style="display:none;cursor:pointer;pointer-events:auto;max-width:190px">🎯 <span id="goalTxt" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span></div>
     </div>
     <div class="right-col">
       <button class="btn" id="muteBtn">🔊</button>
       <button class="btn" id="helpBtn">?</button>
       <button class="btn" id="planBtn">🗺️</button>
+      <button class="btn" id="setBtn">⚙️</button>
     </div>
   </div>
-  <div id="orders"></div>
+  <div id="ordersWrap">
+    <button id="ordersTab">📋 ऑर्डर <span id="ordersCount">0</span> <span class="chev">▼</span></button>
+    <div id="orders"></div>
+  </div>
   <div id="toast"></div>
 </div>
 
@@ -238,9 +296,15 @@ h1 .sub{display:block;font-size:clamp(13px,3vw,18px);color:#ffe39a;letter-spacin
       <h3>📦 Godown Storage</h3>
       <div class="plan-row">
         <div class="icon">🏚️</div>
-        <div class="info"><div class="name">Godown</div><div class="desc">Walk in carrying to store; walk in empty to retrieve.</div></div>
+        <div class="info"><div class="name">Godown</div><div class="desc">Walk in carrying to store; walk in empty to retrieve. Workers drop spare goods here too.</div></div>
         <div class="cost" id="pgdCost">0/40</div>
       </div>
+      <button id="sellGodownBtn" class="plan-action">💰 Sell All from Godown</button>
+    </div>
+    <div class="plan-section">
+      <h3>🏅 Achievements &amp; Stats</h3>
+      <div class="plan-row" style="display:block"><div class="desc" id="planStats">—</div></div>
+      <div id="planAch"></div>
     </div>
     <button id="planClose">Close</button>
   </div>
@@ -255,6 +319,39 @@ h1 .sub{display:block;font-size:clamp(13px,3vw,18px);color:#ffe39a;letter-spacin
     <div class="st-grid" id="stGrid"></div>
     <div class="st-today-reward" id="stReward">Today: ₹50 coins</div>
     <button class="st-btn" id="stClaim">🎁 Claim Reward</button>
+  </div>
+</div>
+
+<!-- how to play -->
+<div id="howOverlay">
+  <div id="howBox">
+    <div class="how-h">🌾 How to Play / कैसे खेलें</div>
+    <div class="how-sub">Farm → Process → Sell → Expand</div>
+    <div class="how-row"><div class="hi">🕹️</div><div class="ht"><b>Move:</b> drag anywhere on screen (or arrow / WASD keys) to walk your farmer.</div></div>
+    <div class="how-row"><div class="hi">🌾</div><div class="ht"><b>Harvest:</b> walk through golden ripe crops — they cut straight into your bag 🎒.</div></div>
+    <div class="how-row"><div class="hi">🐔</div><div class="ht"><b>Process:</b> carry crops to the animals & sheds — Coop makes eggs, Bhains makes milk, Mithai shop makes sweets. Stand next to them to drop inputs and pick up the finished goods.</div></div>
+    <div class="how-row"><div class="hi">🚚</div><div class="ht"><b>Sell:</b> stand at the <b>मंडी</b> truck to sell your whole bag at the live market price.</div></div>
+    <div class="how-row"><div class="hi">📋</div><div class="ht"><b>Orders:</b> fill named customers' orders for bonus ₹ and XP. Tap the orders tab to hide / show the board.</div></div>
+    <div class="how-row"><div class="hi">🏍️</div><div class="ht"><b>Doodhwala:</b> the milkman drives by and buys milk at a premium ₹70.</div></div>
+    <div class="how-row"><div class="hi">🗺️</div><div class="ht"><b>Expand:</b> open the map drawer or walk onto glowing pads to buy land, bigger machines, workers & storage.</div></div>
+    <div class="how-row"><div class="hi">☀️</div><div class="ht"><b>Weather:</b> rain grows crops faster but lowers prices; sun = high prices but crows raid crops — buy a scarecrow.</div></div>
+    <div class="how-row"><div class="hi">🔊</div><div class="ht"><b>Sound:</b> tap the speaker button (top-right) to toggle cow / hen sounds & effects on or off.</div></div>
+    <button id="howClose">समझ गया / Got it!</button>
+  </div>
+</div>
+
+<!-- settings -->
+<div id="setOverlay">
+  <div id="howBox">
+    <div class="how-h">⚙️ Settings</div>
+    <div class="how-sub">Customise your game</div>
+    <div class="set-row"><div><div class="sl">🔊 Sound effects</div></div><button class="set-toggle" id="tgSound">ON</button></div>
+    <div class="set-row"><div><div class="sl">🎵 Background music</div><div class="set-sub">Gentle village tune</div></div><button class="set-toggle" id="tgMusic">OFF</button></div>
+    <div class="set-row"><div><div class="sl">🧒 Kids / Family mode</div><div class="set-sub">Friendly crows • orders never expire</div></div><button class="set-toggle" id="tgKids">OFF</button></div>
+    <button class="plan-action" id="setHowto" style="background:linear-gradient(180deg,#7ad0ff,#2e86de);color:#06243d;box-shadow:0 4px 0 #1a5a8f">📖 How to Play</button>
+    <button class="plan-action" id="restartBtn" style="background:linear-gradient(180deg,#ffb84d,#e08a1f);color:#3a2400;box-shadow:0 4px 0 #a85f12">🔄 Restart Game</button>
+    <button class="plan-action" id="hardRefreshBtn" style="background:rgba(255,255,255,.1);color:#cfe9d6;box-shadow:0 4px 0 #2a2a2a">🧹 Hard Refresh</button>
+    <button class="plan-action" id="setClose" style="background:rgba(255,255,255,.1);color:#fff;box-shadow:0 4px 0 #2a2a2a">Close</button>
   </div>
 </div>
 
@@ -281,9 +378,8 @@ h1 .sub{display:block;font-size:clamp(13px,3vw,18px);color:#ffe39a;letter-spacin
   </div>
 </div>
 <div id="vbar">
-  <span id="vtag">Indian Village Tycoon <b>v1.3</b></span>
-  <button class="vbtn" id="restartBtn">🔄 Restart</button>
-  <button class="vbtn" id="hardRefreshBtn">🧹 Hard Refresh</button>
+  <span id="vtag">Indian Village Tycoon <b>v2.1</b> — tap ⚙️ for settings</span>
+  <a id="bmcBtn" href="https://buymeacoffee.com/rohit.wadhwa" target="_blank" rel="noopener">☕ Buy me a coffee</a>
 </div>
 
 <script>
@@ -321,17 +417,17 @@ let BOUNDS={x0:150,y0:200,x1:1180,y1:1040};
 
 /* ── ITEM META ───────────────────────────────────────────── */
 const ITEMS={
-  wheat: {hi:'गेहूँ',col:'#e8b53a',sell:6, sellable:true},
-  rice:  {hi:'धान',  col:'#d9e06a',sell:7, sellable:true},
-  cane:  {hi:'गन्ना',col:'#7bc24a',sell:10,sellable:true},
-  baingan:{hi:'बैंगन',col:'#7b3fa0',sell:42,sellable:true},
-  bhusa: {hi:'भूसा', col:'#caa24e',sell:3, sellable:true},
-  egg:   {hi:'अंडा', col:'#fff0c8',sell:18,sellable:true},
-  milk:  {hi:'दूध',  col:'#ffffff',sell:38,sellable:true},
-  gobar: {hi:'गोबर', col:'#6b4a2a',sell:2, sellable:true},
-  gas:   {hi:'गैस',  col:'#8fd6ff',sell:28,sellable:true},
-  mango: {hi:'आम',   col:'#ffb02e',sell:32,sellable:true},
-  mithai:{hi:'मिठाई',col:'#ff8fb0',sell:160,sellable:true}
+  wheat: {hi:'गेहूँ',em:'🌾',col:'#e8b53a',sell:6, sellable:true},
+  rice:  {hi:'धान',  em:'🍚',col:'#d9e06a',sell:7, sellable:true},
+  cane:  {hi:'गन्ना',em:'🎋',col:'#7bc24a',sell:10,sellable:true},
+  baingan:{hi:'बैंगन',em:'🍆',col:'#7b3fa0',sell:42,sellable:true},
+  bhusa: {hi:'भूसा', em:'🌿',col:'#caa24e',sell:3, sellable:true},
+  egg:   {hi:'अंडा', em:'🥚',col:'#fff0c8',sell:18,sellable:true},
+  milk:  {hi:'दूध',  em:'🥛',col:'#b8e4ff',sell:38,sellable:true},
+  gobar: {hi:'गोबर', em:'💩',col:'#6b4a2a',sell:2, sellable:true},
+  gas:   {hi:'गैस',  em:'🔥',col:'#8fd6ff',sell:28,sellable:true},
+  mango: {hi:'आम',   em:'🥭',col:'#ffb02e',sell:32,sellable:true},
+  mithai:{hi:'मिठाई',em:'🍬',col:'#ff8fb0',sell:160,sellable:true}
 };
 const CROPS={
   gehu:   {item:'wheat',  bonus:'bhusa',grow:8, stalk:'#e3b23a'},
@@ -347,13 +443,20 @@ const G={
   zones:[],plants:[],machines:[],pads:[],
   workers:[],crows:[],scarecrows:[],
   cash:[],floats:[],
-  doodhwala:null,doodTimer:18,crowTimer:14,
+  doodhwala:null,doodTimer:18,crowTimer:14,animalTimer:6,
   weather:'clear',wTimer:22,rain:[],market:1.0,
   plots:[],     // unlockable land expansion plots
   orders:[],    // active order board
   orderTimer:0, // countdown to next order spawn
   lastSave:Date.now(),
-  t:0
+  t:0,
+  // settings (persist across restart within session)
+  music:false, kidsMode:false,
+  // lifetime stats + achievement claims (reset on new game)
+  stats:{harvested:0,sold:0,ordersDone:0,earned:0},
+  achClaimed:{},
+  // tutorial step: 0..2 active, 99 = done
+  tut:99, _soldOnce:false
 };
 
 /* ── XP TABLE ────────────────────────────────────────────── */
@@ -364,10 +467,39 @@ function addXP(n){
   refreshHUD();
 }
 function onLevelUp(){
-  toast('🎉 Level '+G.level+'! New area unlocked'); sfx.buy();
+  sfx.buy();
   // auto-unlock first locked plot for new level if one exists
   const p=G.plots.find(pl=>pl.locked && pl.unlockLevel<=G.level);
-  if(p){ p.locked=false; revealPlot(p); }
+  if(p){ p.locked=false; revealPlot(p); toast('🎉 Level '+G.level+'! '+p.label+' unlocked!'); }
+  else toast('🎉 Level '+G.level+'! Keep growing!');
+}
+
+/* ── ACHIEVEMENTS + NEXT GOAL ────────────────────────────── */
+const ACHIEVEMENTS=[
+  {id:'h1',   icon:'🌱',name:'First Harvest', desc:'Harvest 1 crop',     test:s=>s.harvested>=1,   reward:30},
+  {id:'h50',  icon:'🌾',name:'Green Thumb',   desc:'Harvest 50 crops',   test:s=>s.harvested>=50,  reward:150},
+  {id:'h250', icon:'🚜',name:'Master Farmer', desc:'Harvest 250 crops',  test:s=>s.harvested>=250, reward:500},
+  {id:'s1',   icon:'💰',name:'First Sale',    desc:'Sell at the mandi',  test:s=>s.sold>=1,        reward:30},
+  {id:'s100', icon:'🪙',name:'Trader',        desc:'Sell 100 goods',     test:s=>s.sold>=100,      reward:250},
+  {id:'o5',   icon:'📋',name:'Helpful Hand',  desc:'Complete 5 orders',  test:s=>s.ordersDone>=5,  reward:200},
+  {id:'o25',  icon:'🏆',name:'Village Hero',  desc:'Complete 25 orders', test:s=>s.ordersDone>=25, reward:600},
+  {id:'e5000',icon:'🤑',name:'Big Earner',    desc:'Earn ₹5000 total',   test:s=>s.earned>=5000,   reward:700},
+];
+function checkAchievements(){
+  for(const a of ACHIEVEMENTS){
+    if(!G.achClaimed[a.id] && a.test(G.stats)){
+      G.achClaimed[a.id]=true; G.money+=a.reward;
+      toast('🏅 '+a.name+'! +₹'+a.reward);
+      if(typeof sfx!=='undefined') sfx.buy();
+    }
+  }
+}
+function nextGoal(){
+  let best=null;
+  const consider=(label,cost)=>{ if(cost>0&&(!best||cost<best.cost)) best={label,cost}; };
+  for(const p of G.pads) if(!p.done) consider(p.label,p.cost);
+  for(const pl of G.plots) if(pl.locked) consider(pl.label,pl.cost);
+  return best;
 }
 
 /* ── LAND EXPANSION PLOTS ────────────────────────────────── */
@@ -458,6 +590,7 @@ function spawnOrder(){
   renderOrdersUI();
 }
 function updateOrders(dt){
+  if(G.kidsMode) return; // relaxed family mode: orders never expire
   let changed=false;
   for(let i=G.orders.length-1;i>=0;i--){
     const o=G.orders[i];
@@ -474,7 +607,9 @@ function checkOrders(sold){
     const o=G.orders[i];
     const canFill=Object.keys(o.items).every(k=>(sold[k]||0)>=(o.items[k]||0));
     if(canFill){
-      G.money+=o.reward; addXP(o.xp);
+      // consume the goods so the same units can't fill another order too
+      for(const k in o.items) sold[k]=(sold[k]||0)-o.items[k];
+      G.money+=o.reward; addXP(o.xp); G.stats.ordersDone++;
       floatText(player.wx,player.wy-20,'✅ +₹'+o.reward+' ('+o.customer.name+')','#ffd24a');
       G.orders.splice(i,1); completed=true;
       sfx.buy();
@@ -490,10 +625,11 @@ function fmtTime(s){
 }
 function renderOrdersUI(){
   const box=document.getElementById('orders'); box.innerHTML='';
+  const cnt=document.getElementById('ordersCount'); if(cnt)cnt.textContent=G.orders.length;
   for(const o of G.orders){
     const card=document.createElement('div');
     card.className='order-card oc-'+o.urgency;
-    const goods=Object.entries(o.items).map(([k,v])=>v+'× '+ITEMS[k].hi).join('  ');
+    const goods=Object.entries(o.items).map(([k,v])=>ITEMS[k].em+' '+v+'× '+ITEMS[k].hi).join('   ');
     card.innerHTML=`
       <div class="order-avatar">${o.customer.emoji}</div>
       <div class="order-body">
@@ -575,6 +711,10 @@ function newGame(){
   G.workers=[]; G.scarecrows=[]; G.crows=[]; G.cash=[]; G.floats=[];
   G.orders=[]; G.orderTimer=20; G.lastSave=Date.now();
   G.weather='clear'; G.wTimer=22; G.rain=[]; G.market=1.0;
+  // clean slate: clear boost, milkman and all event timers so Restart never leaks state
+  G._boost=false; G._boostTimer=0; G.doodhwala=null;
+  G.doodTimer=18; G.crowTimer=14; G.animalTimer=6; G.t=0;
+  G.stats={harvested:0,sold:0,ordersDone:0,earned:0}; G.achClaimed={}; G._soldOnce=false;
   G.zones=[
     {cx:360,cy:300,hw:92,hd:68,crop:'gehu'},
     {cx:720,cy:330,hw:92,hd:68,crop:'dhaan'},
@@ -631,6 +771,10 @@ cv.addEventListener('touchstart',e=>{e.preventDefault();const p=gpt(e);joy.activ
 addEventListener('touchmove',e=>{e.preventDefault();if(!joy.active)return;const p=gpt(e,joy.id);if(!p)return;let dx=p.x-joy.ox,dy=p.y-joy.oy,len=Math.hypot(dx,dy),max=56;if(len>max){dx=dx/len*max;dy=dy/len*max;}joy.dx=dx/max;joy.dy=dy/max;},{passive:false});
 addEventListener('touchend',()=>{joy.active=false;joy.dx=0;joy.dy=0;});
 addEventListener('touchcancel',()=>{joy.active=false;joy.dx=0;joy.dy=0;});
+addEventListener('blur',()=>{joy.active=false;joy.dx=0;joy.dy=0;}); // stop walking if released off-window
+// record real quit time for accurate idle/offline earnings
+addEventListener('pagehide',()=>{try{localStorage.setItem('ivt_quit_ts',Date.now());}catch(e){}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){try{localStorage.setItem('ivt_quit_ts',Date.now());}catch(e){}}});
 addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;});
 addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;});
 function readMove(){
@@ -663,7 +807,22 @@ const sfx={
   deposit(){ blip(300,.10,'sine',.15); },
   buy(){ blip(440,.08,'triangle',.15);setTimeout(()=>blip(660,.10,'triangle',.15),80);setTimeout(()=>blip(990,.12,'triangle',.15),165); },
   nope(){ blip(150,.14,'sawtooth',.09); },
-  caw(){ blip(220,.10,'sawtooth',.07);setTimeout(()=>blip(170,.12,'sawtooth',.06),85); }
+  caw(){ blip(220,.10,'sawtooth',.07);setTimeout(()=>blip(170,.12,'sawtooth',.06),85); },
+  moo(){ // soft low cow lowing, gentle volume
+    if(G.muted)return;const a=aud();if(!a)return;
+    const o=a.createOscillator(),g=a.createGain(),n=a.currentTime;
+    o.type='sine';o.frequency.setValueAtTime(168,n);
+    o.frequency.linearRampToValueAtTime(132,n+.18);
+    o.frequency.linearRampToValueAtTime(150,n+.55);
+    g.gain.setValueAtTime(.0001,n);g.gain.linearRampToValueAtTime(.05,n+.08);
+    g.gain.linearRampToValueAtTime(.0001,n+.6);
+    o.connect(g);g.connect(a.destination);o.start(n);o.stop(n+.64);
+  },
+  cluck(){ // light hen cluck, soft
+    blip(880,.05,'triangle',.04);
+    setTimeout(()=>blip(1150,.04,'triangle',.035),70);
+    setTimeout(()=>blip(760,.05,'triangle',.03),150);
+  }
 };
 let rainNode=null,rainGain=null;
 function weatherSnd(){
@@ -694,11 +853,19 @@ const elXP=document.getElementById('xpfill');
 const elLvl=document.getElementById('lvltxt');
 let _lw='',_lm='';
 function refreshHUD(){
+  if(G.stats) checkAchievements();
   elMoney.textContent=Math.floor(G.money).toLocaleString('en-IN');
   elPack.textContent=packCount()+'/'+G.packCap;
   const frac=Math.min(1,G.xp/xpForLevel(G.level));
   elXP.style.width=(frac*100).toFixed(1)+'%';
   elLvl.textContent='Lv '+G.level;
+  const gp=document.getElementById('goalPill');
+  if(gp){
+    const g=nextGoal();
+    if(g){ gp.style.display='flex'; document.getElementById('goalTxt').textContent=g.label+' ₹'+g.cost;
+      gp.style.color=G.money>=g.cost?'#9cffb0':'#ffe4b5'; }
+    else gp.style.display='none';
+  }
 }
 function updateWeatherHUD(){
   if(G.weather!==_lw){_lw=G.weather;elWIcon.textContent=G.weather==='rain'?'🌧️':(G.weather==='cloudy'?'☁️':'☀️');}
@@ -725,7 +892,7 @@ function cutPlant(p,who){
   const c=CROPS[p.crop];
   if(who===player){
     packAdd(c.item,1);if(c.bonus&&packCount()<G.packCap)packAdd(c.bonus,1);
-    sfx.harvest();floatText(p.wx,p.wy,'+1',ITEMS[c.item].col);
+    sfx.harvest();floatText(p.wx,p.wy,'+1 '+ITEMS[c.item].em,ITEMS[c.item].col);
     player.act=.28;player.swing=.28;
   }else{
     who.carry[c.item]=(who.carry[c.item]||0)+1;
@@ -733,6 +900,7 @@ function cutPlant(p,who){
     who.swing=.28;
   }
   p.ripe=false;p.cut=true;p.regrow=c.grow*.6;p.pop=1;p.claimedBy=null;
+  G.stats.harvested++;
   refreshHUD();
 }
 function depositToMachine(m,item,who){
@@ -755,6 +923,7 @@ function sellPack(mc){
   if(items===0){if(player.act<=0){toast('Nothing to sell');sfx.nope();player.act=.5;}return;}
   for(const k in G.pack)if(ITEMS[k].sellable)delete G.pack[k];
   total=Math.round(total*G.market);
+  G.stats.sold+=items; G.stats.earned+=total; G._soldOnce=true;
   spawnCash(mc.wx,mc.wy,total);
   addXP(Math.ceil(total/8));
   checkOrders(sold);
@@ -785,6 +954,25 @@ function gdInteract(mc){
   refreshHUD();
 }
 
+/* sell everything stored in the godown at once, market-priced + order check */
+function gdSellAll(){
+  const gd=G.machines.find(m=>m.store); if(!gd)return;
+  let total=0,items=0;const sold={};
+  for(const k in gd.storage){
+    if(ITEMS[k]&&ITEMS[k].sellable){ total+=ITEMS[k].sell*gd.storage[k]; items+=gd.storage[k]; sold[k]=(sold[k]||0)+gd.storage[k]; }
+  }
+  if(items===0){ toast('Godown is empty'); sfx.nope(); return; }
+  gd.storage={};
+  total=Math.round(total*G.market);
+  G.money+=total; // menu action — credit instantly instead of dropping cash on the ground
+  G.stats.sold+=items; G.stats.earned+=total;
+  floatText(player.wx,player.wy-20,'+₹'+total,'#9cffb0');
+  addXP(Math.ceil(total/8));
+  checkOrders(sold);
+  toast('🏚️ Sold all godown stock: +₹'+total.toLocaleString('en-IN'));
+  sfx.sell(); refreshHUD();
+}
+
 /* ── WEATHER ─────────────────────────────────────────────── */
 function updateWeather(dt){
   G.wTimer-=dt;
@@ -810,7 +998,9 @@ function seedRain(){G.rain=[];for(let i=0;i<180;i++)G.rain.push({x:Math.random()
 
 /* ── IDLE EARNINGS on load ───────────────────────────────── */
 function applyIdleEarnings(){
-  const elapsed=Math.min((Date.now()-G.lastSave)/1000,600); // cap 10 min
+  let base=G.lastSave;
+  const q=+localStorage.getItem('ivt_quit_ts'); if(Number.isFinite(q)&&q>base)base=q; // real close time
+  const elapsed=Math.min((Date.now()-base)/1000,600); // cap 10 min
   if(elapsed<30||G.workers.length===0)return;
   // estimate simple per-worker per-second income
   const ratePerWorker=4;
@@ -891,9 +1081,9 @@ function update(dt){
         }
       }else mc.proc=0;
     }
-    if(dist(player.wx,player.wy,mc.wx,mc.wy)<50){
+    if(dist(player.wx,player.wy,mc.wx,mc.wy)<60){
       if(mc.out>0&&packCount()<G.packCap&&player.act<=0){
-        mc.out--;packAdd(mc.output,1);sfx.pick();floatText(mc.wx,mc.wy,'+'+ITEMS[mc.output].hi,ITEMS[mc.output].col);
+        mc.out--;packAdd(mc.output,1);sfx.pick();floatText(mc.wx,mc.wy,'+'+ITEMS[mc.output].em+' '+ITEMS[mc.output].hi,ITEMS[mc.output].col);
         player.act=.3;refreshHUD();
       }
       if(mc._extra>0&&packCount()<G.packCap&&player.act<=0){
@@ -960,6 +1150,18 @@ function update(dt){
   // crows
   updateCrows(dt);
 
+  // gentle ambient animal sounds (cow / hen), respects mute
+  G.animalTimer-=dt;
+  if(G.animalTimer<=0){
+    G.animalTimer=11+Math.random()*9;
+    if(!G.muted){
+      const coop=G.machines.find(m=>m.type==='coop'&&!m.locked);
+      const buf=G.machines.find(m=>m.type==='buffalo'&&!m.locked);
+      const opts=[];if(buf)opts.push('moo');if(coop)opts.push('cluck');
+      if(opts.length){const pick=opts[Math.floor(Math.random()*opts.length)];sfx[pick]();}
+    }
+  }
+
   // order countdown + replenish
   updateOrders(dt);
   G.orderTimer-=dt;
@@ -967,6 +1169,14 @@ function update(dt){
 
   // processing boost tick
   if(G._boost){ G._boostTimer-=dt; if(G._boostTimer<=0){G._boost=false;} }
+
+  // first-session tutorial advance
+  if(G.tut<3){
+    G._tutT=(G._tutT||0)+dt;
+    if(G.tut===0 && G.stats.harvested>=1){ G.tut=1; G._tutT=0; }
+    else if(G.tut===1 && G._soldOnce){ G.tut=2; G._tutT=0; }
+    else if(G.tut===2 && (G._tutOrders || G._tutT>7)){ G.tut=99; try{localStorage.setItem('ivt_tutorial','1');}catch(e){} toast('🎉 You got it! Happy farming!'); }
+  }
 }
 
 /* ── PADS ────────────────────────────────────────────────── */
@@ -1055,8 +1265,16 @@ function updateWorker(w,dt){
       w.wait-=dt;if(w.wait>0)break;
       const d=w.target;
       if(d.kind==='mandi'||d.kind==='drop'){
-        // Workers no longer sell — if they somehow have a drop dest, clear carry near godown
-        w.carry={};
+        // Workers don't sell — they deposit leftover/finished goods into the Godown
+        // so the player can retrieve them (previously these items were deleted).
+        const gd=G.machines.find(m=>m.store);
+        if(gd){
+          for(const k in w.carry){
+            if(!ITEMS[k]||!ITEMS[k].sellable)continue;
+            while(w.carry[k]>0&&gdStored(gd)<gd.storeCap){gd.storage[k]=(gd.storage[k]||0)+1;w.carry[k]--;}
+            if(w.carry[k]<=0)delete w.carry[k];
+          }
+        }
       }else if(d.kind==='machine'){
         const mc=d.ref;
         for(const a of mc.accept){
@@ -1070,6 +1288,9 @@ function updateWorker(w,dt){
           if(mc.input.length<mc.cap+2){mc.input.push(a);w.carry[a]--;if(w.carry[a]<=0)delete w.carry[a];}
         }
       }
+      // still carrying after a drop attempt = godown full / nothing accepts it.
+      // idle and wait instead of spinning in a tight to_dest loop.
+      if(wcc(w)>0&&(d.kind==='mandi'||d.kind==='drop')){ w.state='idle'; w.wait=1.5; break; }
       w.state=wcc(w)>0?'to_dest':'idle';
       if(w.state==='to_dest')w.target=chooseDest(w);
       w.wait=.12;break;
@@ -1096,6 +1317,7 @@ function chooseDest(w){
   }
   // No machine wants what we carry — drop near godown for player to pick up
   const gd=G.machines.find(m=>m.store);
+  if(!gd){ w.wait=1; return null; } // no godown — idle briefly instead of crashing
   return{kind:'drop',wx:gd.wx+30,wy:gd.wy};
 }
 function moveTo(w,tx,ty,dt,reach){
@@ -1110,9 +1332,11 @@ function moveTo(w,tx,ty,dt,reach){
 function updateDood(dt){
   if(G.doodhwala){
     const d=G.doodhwala;d.wx+=d.dir*d.speed*dt;d.bob+=dt;
-    if(dist(player.wx,player.wy,d.wx,d.wy)<70&&(G.pack.milk||0)>0&&player.act<=0){
-      const n=G.pack.milk,tot=70*n;delete G.pack.milk;
-      spawnCash(d.wx,d.wy,tot);floatText(d.wx,d.wy-22,'Doodhwala +₹'+tot,'#bff');sfx.sell();
+    if(dist(player.wx,player.wy,d.wx,d.wy)<150&&(G.pack.milk||0)>0&&player.act<=0){
+      const n=G.pack.milk,tot=Math.round(70*n*G.market);delete G.pack.milk;
+      G.money+=tot;G.stats.earned+=tot;G.stats.sold+=n;
+      addXP(Math.ceil(tot/8));
+      floatText(player.wx,player.wy-20,'🏍️ +₹'+tot,'#cfefff');sfx.sell();
       player.act=.5;refreshHUD();
     }
     if(d.wx<BOUNDS.x0-80||d.wx>BOUNDS.x1+80){G.doodhwala=null;G.doodTimer=20+Math.random()*15;}
@@ -1120,7 +1344,9 @@ function updateDood(dt){
     G.doodTimer-=dt;
     if(G.doodTimer<=0){
       const fl=Math.random()<.5;
-      G.doodhwala={wx:fl?BOUNDS.x0-60:BOUNDS.x1+60,wy:BOUNDS.y1-90,dir:fl?1:-1,speed:70,bob:0};
+      // drive along the ROAD at the top (never crosses fields); sell range widened so the
+      // player can sell milk from near the top fence.
+      G.doodhwala={wx:fl?BOUNDS.x0-60:BOUNDS.x1+60,wy:BOUNDS.y0-100,dir:fl?1:-1,speed:70,bob:0};
       toast('🏍️ Doodhwala आया — milk ₹70!');
     }
   }
@@ -1147,7 +1373,7 @@ function updateCrows(dt){
     if(c.state==='flee'){c.wy-=120*dt;c.wx+=(c.wx<player.wx?-1:1)*40*dt;if(c.wy<BOUNDS.y0-60)G.crows.splice(i,1);continue;}
     const t=c.target,dx=t.wx-c.wx,dy=t.wy-c.wy,d=Math.hypot(dx,dy);
     if(c.state!=='leave'&&d>12){c.wx+=dx/d*150*dt;c.wy+=dy/d*150*dt;}
-    else if(c.state!=='leave'){t.t=0;t.ripe=false;t.cut=false;t.claimedBy=null;c.state='leave';}
+    else if(c.state!=='leave'){ if(!G.kidsMode){t.t=0;t.ripe=false;t.cut=false;t.claimedBy=null;} c.state='leave';}
     if(c.state==='leave'){c.wy-=110*dt;c.wx-=60*dt;if(c.wy<BOUNDS.y0-60)G.crows.splice(i,1);}
   }
 }
@@ -1185,7 +1411,38 @@ function render(){
     ctx.fillStyle=fl.col;ctx.fillText(fl.txt,p.x,p.y-38);ctx.restore();
   }
   drawRainOverlay();
+  drawTutorial();
+  drawDoodHint();
   drawJoy();
+}
+
+/* ── TUTORIAL ARROW ──────────────────────────────────────── */
+function drawTutorial(){
+  if(G.tut>=3) return;
+  let tx=null,ty=0,label='';
+  if(G.tut===0){
+    let best=null,bd=1e9;
+    for(const p of G.plants){ if(p.ripe&&!p.cut){const d=dist(player.wx,player.wy,p.wx,p.wy);if(d<bd){bd=d;best=p;}} }
+    if(best){ const s=iso(best.wx,best.wy); tx=s.x; ty=s.y-42; label='Walk here to harvest! 🌾'; }
+    else { const z=G.zones[0]; if(z){ const s=iso(z.cx,z.cy); tx=s.x; ty=s.y-30; label='Wait for golden crops 🌾'; } }
+  } else if(G.tut===1){
+    const m=G.machines.find(x=>x.sell); if(m){ const s=iso(m.wx,m.wy); tx=s.x; ty=s.y-72; label='Sell here at मंडी! 🚚'; }
+  } else if(G.tut===2){
+    tx=VW/2; ty=VH-118; label='Tap to fill orders! 📋';
+  }
+  if(tx==null) return;
+  const bob=Math.sin(G.t*5)*7, ay=ty-26+bob;
+  ctx.save();
+  ctx.fillStyle='#ffd24a';ctx.strokeStyle='rgba(0,0,0,.45)';ctx.lineWidth=3;
+  ctx.beginPath();
+  ctx.moveTo(tx,ty-2+bob);ctx.lineTo(tx-13,ay);ctx.lineTo(tx-5,ay);ctx.lineTo(tx-5,ay-18);ctx.lineTo(tx+5,ay-18);ctx.lineTo(tx+5,ay);ctx.lineTo(tx+13,ay);ctx.closePath();
+  ctx.fill();ctx.stroke();
+  ctx.font='800 14px Baloo 2';ctx.textAlign='center';
+  const w=ctx.measureText(label).width+24, ly=ay-30;
+  ctx.fillStyle='rgba(18,28,18,.94)';rrect(tx-w/2,ly-21,w,29,14);ctx.fill();
+  ctx.strokeStyle='rgba(255,210,74,.6)';ctx.lineWidth=1.5;rrect(tx-w/2,ly-21,w,29,14);ctx.stroke();
+  ctx.fillStyle='#fff';ctx.fillText(label,tx,ly);
+  ctx.restore();
 }
 
 /* ── GROUND ──────────────────────────────────────────────── */
@@ -1354,8 +1611,8 @@ function drawMcStatus(mc){
       const n=have[a]||0,ok=n>0;
       ctx.fillStyle=ok?'rgba(30,100,50,.85)':'rgba(80,30,30,.85)';
       rrect(p.x+xoff,p.y-20,28,18,5);ctx.fill();
-      ctx.fillStyle=ok?'#9cffb0':'#ff9b9b';ctx.font='800 10px Baloo 2';ctx.textAlign='center';
-      ctx.fillText(ITEMS[a].hi,p.x+xoff+14,p.y-6);
+      ctx.font='13px Baloo 2';ctx.textAlign='center';
+      ctx.fillText(ITEMS[a].em,p.x+xoff+14,p.y-5);
       xoff+=32;
     }
   }
@@ -1373,6 +1630,10 @@ function drawMcStatus(mc){
   }
   // slot upgrade indicator on cap machines
   if(mc.cap&&near)lbl(mc.wx,mc.wy-82,mc.name+(mc.cap?' ('+mc.cap+')':''),'#eafff0');
+  // "feed me" hint when a processor is empty (no input queued, nothing ready)
+  if(near&&!mc.passive&&mc.accept&&mc.accept.length&&mc.input.length===0&&mc.out===0){
+    lbl(mc.wx,mc.wy-66,'Feed '+mc.accept.map(a=>ITEMS[a].em).join(' '),'#ffd24a');
+  }
 }
 
 function drawCoop(mc){
@@ -1387,7 +1648,15 @@ function drawCoop(mc){
   ctx.fillStyle='#c0492f';ctx.beginPath();ctx.moveTo(A.x,A.y-30);ctx.lineTo(B.x,B.y-30);ctx.lineTo(apex.x,peak);ctx.closePath();ctx.fill();
   ctx.fillStyle='#9e3a23';ctx.beginPath();ctx.moveTo(B.x,B.y-30);ctx.lineTo(C.x,C.y-30);ctx.lineTo(apex.x,peak);ctx.closePath();ctx.fill();
   ctx.strokeStyle='#7e2c19';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(A.x,A.y-30);ctx.lineTo(apex.x,peak);ctx.lineTo(C.x,C.y-30);ctx.stroke();
-  if(!mc.locked){const hp=iso(mc.wx-30,mc.wy+30);ctx.fillStyle='#e3c463';ctx.beginPath();ctx.ellipse(hp.x,hp.y,8,4,0,0,7);ctx.fill();drawHen(mc.wx-2,mc.wy+30,Math.abs(Math.sin(mc.bob*2))*2);}
+  if(!mc.locked){
+    const spots=[[-30,32],[-8,40],[16,34],[-20,48],[8,48]];
+    const n=Math.min(mc.cap,spots.length);
+    // depth-sort hens so nearer ones draw last
+    const order=spots.slice(0,n).map((s,i)=>({s,i})).sort((a,b)=>(a.s[1])-(b.s[1]));
+    for(const{s,i} of order){
+      drawHen(mc.wx+s[0],mc.wy+s[1],Math.abs(Math.sin(mc.bob*2+i*1.3))*2);
+    }
+  }
   ctx.globalAlpha=1;
 }
 function drawHen(wx,wy,b){
@@ -1405,7 +1674,12 @@ function drawBuffaloPen(mc){
   ctx.beginPath();ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);ctx.lineTo(C.x,C.y);ctx.lineTo(D.x,D.y);ctx.closePath();ctx.fillStyle='#7ec24c';ctx.fill();ctx.strokeStyle='#5a9a36';ctx.lineWidth=2;ctx.stroke();
   ctx.strokeStyle='#9a6b3a';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(A.x,A.y-12);ctx.lineTo(B.x,B.y-12);ctx.stroke();ctx.beginPath();ctx.moveTo(A.x,A.y-12);ctx.lineTo(D.x,D.y-12);ctx.stroke();
   const tr=iso(mc.wx-26,mc.wy+18);ctx.fillStyle='#5b6b7a';rrect(tr.x-12,tr.y-8,24,10,3);ctx.fill();ctx.fillStyle='#8fd6ff';rrect(tr.x-10,tr.y-6,20,4,2);ctx.fill();
-  if(!mc.locked)drawBuffalo(mc.wx+8,mc.wy-2,Math.sin(mc.bob*1.5)*1.5);
+  if(!mc.locked){
+    const spots=[[6,-8],[-22,10],[30,12]];
+    const n=Math.min(spots.length,1+Math.floor(mc.cap/4)); // cap4→2, cap8→3
+    const order=spots.slice(0,n).map((s,i)=>({s,i})).sort((a,b)=>(a.s[1])-(b.s[1]));
+    for(const{s,i} of order) drawBuffalo(mc.wx+s[0],mc.wy+s[1],Math.sin(mc.bob*1.5+i*1.4)*1.5);
+  }
   ctx.globalAlpha=1;
 }
 function drawBuffalo(wx,wy,b){
@@ -1463,12 +1737,44 @@ function drawMithai(mc){
 }
 function drawTruck(mc){
   const p=iso(mc.wx,mc.wy);
-  ctx.fillStyle='rgba(0,0,0,.22)';ctx.beginPath();ctx.ellipse(p.x,p.y+4,46,12,0,0,7);ctx.fill();
-  box3D(mc.wx+10,mc.wy,30,24,30,'#ffd24a','#d98a1f','#f0a82c');
-  box3D(mc.wx-26,mc.wy,16,22,26,'#2e86de','#1e5fa8','#2670bf');
-  ctx.fillStyle='#222';for(const o of[[-30,18],[6,18],[-30,-18],[6,-18]]){const w=iso(mc.wx+o[0],mc.wy+o[1]);ctx.beginPath();ctx.arc(w.x,w.y,6,0,7);ctx.fill();}
-  const s=iso(mc.wx+10,mc.wy);ctx.fillStyle='#fff';rrect(s.x-20,s.y-58,40,14,5);ctx.fill();ctx.fillStyle='#c9572f';ctx.font='800 10px Baloo 2';ctx.textAlign='center';ctx.fillText('मंडी',s.x,s.y-47);
-  ctx.strokeStyle='rgba(255,210,74,'+(0.4+0.3*Math.sin(G.t*3))+')';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(p.x,p.y+2,52,16,0,0,7);ctx.stroke();
+  // pulsing sell ring on the ground
+  ctx.strokeStyle='rgba(255,210,74,'+(0.4+0.3*Math.sin(G.t*3))+')';ctx.lineWidth=3;
+  ctx.beginPath();ctx.ellipse(p.x,p.y+6,54,17,0,0,7);ctx.stroke();
+  ctx.save();ctx.translate(p.x,p.y);
+  // shadow
+  ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(-4,7,50,12,0,0,7);ctx.fill();
+  // wheels (side view, facing right)
+  for(const wx of[-30,24]){
+    ctx.fillStyle='#1c1c1c';ctx.beginPath();ctx.arc(wx,2,11,0,7);ctx.fill();
+    ctx.fillStyle='#52595f';ctx.beginPath();ctx.arc(wx,2,5,0,7);ctx.fill();
+    ctx.fillStyle='#8a929a';ctx.beginPath();ctx.arc(wx,2,2,0,7);ctx.fill();
+  }
+  // cargo body (rear/left) — green decorated lorry
+  ctx.fillStyle='#2f8f4f';rrect(-48,-36,50,34,4);ctx.fill();
+  ctx.fillStyle='#39a35c';rrect(-48,-36,50,9,4);ctx.fill();      // top rail highlight
+  ctx.fillStyle='#1f6e3b';rrect(-48,-8,50,6,2);ctx.fill();        // lower band
+  // sacks/crates poking out of cargo (sell hint)
+  ctx.fillStyle='#caa24e';rrect(-42,-30,13,13,2);ctx.fill();
+  ctx.fillStyle='#e8b53a';rrect(-26,-28,13,11,2);ctx.fill();
+  ctx.fillStyle='#7b3fa0';ctx.beginPath();ctx.arc(-9,-22,5,0,7);ctx.fill();
+  // Indian truck art stripe
+  ctx.fillStyle='#e8513f';rrect(-48,-14,50,3,1);ctx.fill();
+  // cab (front/right) — yellow with red roof
+  ctx.fillStyle='#f0a82c';rrect(2,-32,26,30,4);ctx.fill();
+  ctx.fillStyle='#d4541f';rrect(2,-32,26,7,4);ctx.fill();         // roof
+  ctx.fillStyle='#d98a1f';rrect(2,-10,26,8,3);ctx.fill();         // lower cab
+  // windshield + door line
+  ctx.fillStyle='#bfe6ff';rrect(8,-24,15,12,3);ctx.fill();
+  ctx.strokeStyle='rgba(0,0,0,.2)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(16,-10);ctx.lineTo(16,-2);ctx.stroke();
+  // headlight + bumper
+  ctx.fillStyle='#fff3b0';ctx.beginPath();ctx.arc(27,-6,2.4,0,7);ctx.fill();
+  ctx.fillStyle='#9aa1a8';rrect(26,-3,5,5,2);ctx.fill();
+  ctx.restore();
+  // मंडी signboard above cargo
+  const s=iso(mc.wx,mc.wy);
+  ctx.fillStyle='#7a3d12';rrect(s.x-26,s.y-68,52,18,5);ctx.fill();
+  ctx.fillStyle='#5c2c0c';rrect(s.x-26,s.y-52,52,2,1);ctx.fill();
+  ctx.fillStyle='#ffd24a';ctx.font='800 13px Baloo 2';ctx.textAlign='center';ctx.fillText('मंडी',s.x,s.y-54);
 }
 function drawGodown(mc){
   const p=iso(mc.wx,mc.wy);
@@ -1503,7 +1809,47 @@ function drawDood(d){
   ctx.fillStyle='#e63b2e';ctx.beginPath();ctx.arc(0,-46+wob,7,0,7);ctx.fill();
   ctx.fillStyle='#cdeffe';ctx.beginPath();ctx.arc(2*f,-46+wob,4,-0.6,.8);ctx.fill();
   ctx.restore();
-  lbl(d.wx,d.wy-58,'दूध ₹70','#cfefff');
+  const milkN=G.pack.milk||0;
+  if(milkN>0){
+    lbl(d.wx,d.wy-58,'🥛 Sell '+milkN+' → ₹'+(70*milkN),'#cfefff');
+  } else {
+    lbl(d.wx,d.wy-58,'🏍️ Doodhwala — bring 🥛','#cfefff');
+    // show "need milk" nudge when player is close but has no milk
+    const dp=dist(player.wx,player.wy,d.wx,d.wy);
+    if(dp<200){
+      const ps=iso(d.wx,d.wy-90);
+      ctx.save();ctx.font='800 12px Baloo 2';ctx.textAlign='center';
+      const w2=ctx.measureText('Need 🥛 milk!').width+16;
+      ctx.fillStyle='rgba(180,80,30,.92)';rrect(ps.x-w2/2,ps.y-18,w2,22,11);ctx.fill();
+      ctx.fillStyle='#fff';ctx.fillText('Need 🥛 milk!',ps.x,ps.y);
+      ctx.restore();
+    }
+  }
+}
+function drawDoodHint(){
+  if(!G.doodhwala)return;
+  const d=G.doodhwala;
+  const milkN=G.pack.milk||0;
+  const pulse=0.75+0.25*Math.sin(G.t*5);
+  const cx=VW/2,cy=110;
+  ctx.save();ctx.font='800 13px Baloo 2';ctx.textAlign='center';
+  let txt='';
+  if(milkN>0&&dist(player.wx,player.wy,d.wx,d.wy)>=200){
+    txt='⬆️ Walk to road — sell 🥛 ₹'+(70*milkN);
+  } else if(milkN===0){
+    // guide player: check if bhains has milk ready or needs input
+    const bh=G.machines.find(m=>m.type==='buffalo');
+    if(bh&&bh.out>0) txt='🥛 Collect milk from Bhains first!';
+    else if(bh&&bh.input.length>0) txt='⏳ Milk processing at Bhains…';
+    else txt='🌿 Harvest wheat → feed Bhains → get 🥛 milk!';
+  }
+  if(!txt){ctx.restore();return;}
+  const w=ctx.measureText(txt).width+22;
+  ctx.globalAlpha=pulse;
+  ctx.fillStyle='rgba(20,70,130,.88)';rrect(cx-w/2,cy-20,w,26,13);ctx.fill();
+  ctx.strokeStyle='rgba(140,220,255,.7)';ctx.lineWidth=1.5;rrect(cx-w/2,cy-20,w,26,13);ctx.stroke();
+  ctx.fillStyle='#cfefff';ctx.fillText(txt,cx,cy);
+  ctx.restore();
 }
 
 /* ── PAD ─────────────────────────────────────────────────── */
@@ -1512,11 +1858,14 @@ function drawPad(p){
   ctx.fillStyle='rgba(70,200,255,'+(0.18+0.18*pulse)+')';ctx.beginPath();ctx.ellipse(o.x,o.y,38,17,0,0,7);ctx.fill();
   ctx.strokeStyle='rgba(120,220,255,.9)';ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(o.x,o.y,38,17,0,0,7);ctx.stroke();
   ctx.fillStyle='rgba(120,220,255,.95)';ctx.beginPath();ctx.moveTo(o.x-7,o.y-2);ctx.lineTo(o.x+7,o.y-2);ctx.lineTo(o.x,o.y-12);ctx.closePath();ctx.fill();
-  const near=dist(player.wx,player.wy,p.wx,p.wy)<170,ty=o.y-32-pulse*4;
-  if(near){
-    const txt=p.label+'  ₹'+p.cost;ctx.font='800 13px Baloo 2';ctx.textAlign='center';const w=ctx.measureText(txt).width+20;
-    ctx.fillStyle=G.money>=p.cost?'rgba(34,168,90,.94)':'rgba(60,72,84,.94)';rrect(o.x-w/2,ty-18,w,24,12);ctx.fill();ctx.fillStyle='#fff';ctx.fillText(txt,o.x,ty);
-  }else{ctx.fillStyle=G.money>=p.cost?'rgba(34,168,90,.92)':'rgba(60,72,84,.9)';rrect(o.x-22,ty-14,44,20,10);ctx.fill();ctx.fillStyle='#fff';ctx.font='800 12px Baloo 2';ctx.textAlign='center';ctx.fillText('₹'+p.cost,o.x,ty);}
+  // always show what the pad does + its cost (not only when nearby)
+  const ty=o.y-32-pulse*4;
+  const txt=p.label+'  ₹'+p.cost;
+  ctx.font='800 13px Baloo 2';ctx.textAlign='center';
+  const w=ctx.measureText(txt).width+20;
+  ctx.fillStyle=G.money>=p.cost?'rgba(34,168,90,.94)':'rgba(60,72,84,.94)';
+  rrect(o.x-w/2,ty-18,w,24,12);ctx.fill();
+  ctx.fillStyle='#fff';ctx.fillText(txt,o.x,ty);
 }
 function drawScarecrow(s){
   const p=iso(s.wx,s.wy);
@@ -1647,6 +1996,7 @@ function save(){
   try{
     localStorage.setItem(SK,JSON.stringify({
       money:G.money,xp:G.xp,level:G.level,muted:G.muted,
+      music:G.music,kidsMode:G.kidsMode,stats:G.stats,achClaimed:G.achClaimed,
       pack:G.pack,packCap:G.packCap,
       machines:G.machines.map(m=>({type:m.type,locked:m.locked,input:m.input,out:m.out,cap:m.cap,storage:m.storage})),
       pads:G.pads.map(p=>({type:p.type,target:p.target,cost:p.cost,done:!!p.done})),
@@ -1660,15 +2010,20 @@ function load(){
   let d=null;try{d=JSON.parse(localStorage.getItem(SK));}catch(e){}
   if(!d)return false;
   newGame();
-  G.money=d.money||0;G.xp=d.xp||0;G.level=d.level||1;G.muted=!!d.muted;
-  G.pack=d.pack||{};if(d.packCap)G.packCap=d.packCap;
-  G.lastSave=d.ts||Date.now();
+  const num=(v,def)=>Number.isFinite(+v)?+v:def;
+  G.money=num(d.money,0);G.xp=num(d.xp,0);G.level=Math.max(1,num(d.level,1));G.muted=!!d.muted;
+  G.pack=(d.pack&&typeof d.pack==='object')?d.pack:{};
+  G.packCap=Math.max(12,num(d.packCap,12));
+  G.music=!!d.music; G.kidsMode=!!d.kidsMode;
+  if(d.stats&&typeof d.stats==='object')G.stats=Object.assign({harvested:0,sold:0,ordersDone:0,earned:0},d.stats);
+  if(d.achClaimed&&typeof d.achClaimed==='object')G.achClaimed=d.achClaimed;
+  G.lastSave=num(d.ts,Date.now());
   if(d.machines)d.machines.forEach(sm=>{const m=G.machines.find(x=>x.type===sm.type);if(m){m.locked=sm.locked;m.input=sm.input||[];m.out=sm.out||0;if(sm.cap)m.cap=sm.cap;if(sm.storage)m.storage=sm.storage;}});
   if(d.pads)d.pads.forEach(sp=>{const p=G.pads.find(x=>x.type===sp.type&&x.target===sp.target);if(p){p.cost=sp.cost;p.done=sp.done;}});
   if(d.plots)d.plots.forEach(sp=>{const pl=G.plots.find(x=>x.id===sp.id);if(pl){pl.cost=sp.cost;if(!sp.locked&&pl.locked){pl.locked=false;revealPlot(pl);}}});
   for(let i=0;i<(d.workers||0);i++)addWorker();
   if(d.scares)G.scarecrows=d.scares.map(s=>({wx:s.wx,wy:s.wy,r:s.r}));
-  if(d.px!=null){player.wx=d.px;player.wy=d.py;}
+  if(Number.isFinite(+d.px)&&Number.isFinite(+d.py)){player.wx=+d.px;player.wy=+d.py;}
   document.getElementById('muteBtn').textContent=G.muted?'🔇':'🔊';
   return true;
 }
@@ -1682,7 +2037,7 @@ function frame(ts){
 }
 requestAnimationFrame(frame);
 
-const VERSION='v1.3';
+const VERSION='v2.1';
 
 // ── Confirm overlay helper ────────────────────────
 let _cYesFn=null;
@@ -1718,6 +2073,7 @@ document.getElementById('restartBtn').addEventListener('click',()=>{
     'All crops, money, workers, and upgrades will reset. Weather and time keep going.',
     ()=>{
       try{ localStorage.removeItem(SK); }catch(e){}
+      document.getElementById('setOverlay').classList.remove('show');
       newGame(); refreshHUD();
       // re-show start screen
       const s=document.getElementById('start');
@@ -1727,7 +2083,83 @@ document.getElementById('restartBtn').addEventListener('click',()=>{
     }
   );
 });
-document.getElementById('helpBtn').addEventListener('click',()=>{toast('Walk through golden crops to harvest • Stand at मंडी to sell • Tap 🗺️ to expand');});
+// How-to-Play instructions
+function openHowto(){ document.getElementById('howOverlay').classList.add('show'); }
+function closeHowto(){ document.getElementById('howOverlay').classList.remove('show'); }
+document.getElementById('helpBtn').addEventListener('click',openHowto);
+document.getElementById('howClose').addEventListener('click',closeHowto);
+
+// Mute / unmute — toggles all game sound, updates icon
+document.getElementById('muteBtn').addEventListener('click',()=>{
+  G.muted=!G.muted;
+  document.getElementById('muteBtn').textContent=G.muted?'🔇':'🔊';
+  if(!G.muted){ const a=aud(); if(a&&a.state==='suspended')a.resume(); }
+  weatherSnd();
+  toast(G.muted?'🔇 Sound off':'🔊 Sound on');
+  syncSettings(); save();
+});
+
+// ── Ambient music (gentle, sparse pentatonic) ──
+let musicTimer=null;
+const PENTA=[392.00,440.00,523.25,587.33,659.25];
+function playAmbientNote(){
+  if(!G.music||G.muted)return;const a=aud();if(!a)return;
+  const f=PENTA[Math.floor(Math.random()*PENTA.length)];
+  const o=a.createOscillator(),g=a.createGain(),n=a.currentTime;
+  o.type='sine';o.frequency.value=f;
+  g.gain.setValueAtTime(.0001,n);g.gain.linearRampToValueAtTime(.04,n+.4);
+  g.gain.linearRampToValueAtTime(.0001,n+2.2);
+  o.connect(g);g.connect(a.destination);o.start(n);o.stop(n+2.3);
+}
+function startMusic(){ if(musicTimer)return; playAmbientNote(); musicTimer=setInterval(playAmbientNote,2600); }
+function stopMusic(){ if(musicTimer){clearInterval(musicTimer);musicTimer=null;} }
+
+// ── Settings panel ──
+function syncSettings(){
+  const sndOn=!G.muted;
+  const t1=document.getElementById('tgSound'),t2=document.getElementById('tgMusic'),t3=document.getElementById('tgKids');
+  if(!t1)return;
+  t1.textContent=sndOn?'ON':'OFF';t1.classList.toggle('on',sndOn);
+  t2.textContent=G.music?'ON':'OFF';t2.classList.toggle('on',!!G.music);
+  t3.textContent=G.kidsMode?'ON':'OFF';t3.classList.toggle('on',!!G.kidsMode);
+}
+function openSettings(){ syncSettings(); document.getElementById('setOverlay').classList.add('show'); }
+function closeSettings(){ document.getElementById('setOverlay').classList.remove('show'); }
+document.getElementById('setBtn').addEventListener('click',openSettings);
+document.getElementById('setClose').addEventListener('click',closeSettings);
+document.getElementById('setHowto').addEventListener('click',()=>{ closeSettings(); openHowto(); });
+document.getElementById('tgSound').addEventListener('click',()=>{
+  G.muted=!G.muted;document.getElementById('muteBtn').textContent=G.muted?'🔇':'🔊';
+  if(!G.muted){const a=aud();if(a&&a.state==='suspended')a.resume();}
+  weatherSnd();syncSettings();save();
+});
+document.getElementById('tgMusic').addEventListener('click',()=>{
+  G.music=!G.music;
+  if(G.music){const a=aud();if(a&&a.state==='suspended')a.resume();startMusic();}else stopMusic();
+  syncSettings();save();
+});
+document.getElementById('tgKids').addEventListener('click',()=>{
+  G.kidsMode=!G.kidsMode;
+  toast(G.kidsMode?'🧒 Kids mode ON — friendly crows, relaxed orders':'Kids mode OFF');
+  syncSettings();save();
+});
+document.getElementById('goalPill').addEventListener('click',openPlan);
+
+// Orders board collapse/expand toggle
+(function(){
+  const wrap=document.getElementById('ordersWrap');
+  const tab=document.getElementById('ordersTab');
+  const chev=tab.querySelector('.chev');
+  function apply(){chev.textContent=wrap.classList.contains('collapsed')?'▼':'▲';}
+  if(localStorage.getItem('ivt_orders_collapsed')==='1')wrap.classList.add('collapsed');
+  apply();
+  tab.addEventListener('click',()=>{
+    wrap.classList.toggle('collapsed');
+    localStorage.setItem('ivt_orders_collapsed',wrap.classList.contains('collapsed')?'1':'0');
+    apply();
+    G._tutOrders=true;
+  });
+})();
 
 // Weather banner
 function showWxBanner(msg, sub){
@@ -1785,6 +2217,31 @@ function openPlan(){
   // godown
   const gd=G.machines.find(m=>m.store);
   document.getElementById('pgdCost').textContent=gd?(gdStored(gd)+'/'+gd.storeCap):'N/A';
+  const sb=document.getElementById('sellGodownBtn');
+  if(sb){
+    let val=0;
+    if(gd)for(const k in gd.storage)if(ITEMS[k]&&ITEMS[k].sellable)val+=ITEMS[k].sell*gd.storage[k];
+    val=Math.round(val*G.market);
+    sb.disabled=val<=0;
+    sb.textContent=val>0?('💰 Sell All from Godown  (+₹'+val.toLocaleString('en-IN')+')'):'💰 Godown is empty';
+    sb.onclick=()=>{ gdSellAll(); refreshPlanDrawer(); };
+  }
+
+  // stats + achievements
+  const st=document.getElementById('planStats');
+  if(st)st.textContent='🌾 '+G.stats.harvested+' harvested • 🪙 '+G.stats.sold+' sold • 📋 '+G.stats.ordersDone+' orders • 💰 ₹'+Math.round(G.stats.earned).toLocaleString('en-IN')+' earned';
+  const pa=document.getElementById('planAch');
+  if(pa){
+    pa.innerHTML='';
+    for(const a of ACHIEVEMENTS){
+      const done=!!G.achClaimed[a.id];
+      const d=document.createElement('div'); d.className='plan-row'+(done?'':' locked');
+      d.innerHTML='<div class="icon">'+(done?a.icon:'🔒')+'</div>'+
+        '<div class="info"><div class="name">'+a.name+'</div><div class="desc">'+a.desc+'</div></div>'+
+        '<div class="cost">'+(done?'✅':'+₹'+a.reward)+'</div>';
+      pa.appendChild(d);
+    }
+  }
 
   document.getElementById('planDrawer').classList.add('open');
 }
@@ -1802,10 +2259,15 @@ document.getElementById('play').addEventListener('click',()=>{
   // fill 3 orders immediately
   while(G.orders.length<3) spawnOrder();
   refreshHUD();
+  // first-session tutorial + music
+  G.tut = localStorage.getItem('ivt_tutorial') ? 99 : 0; G._tutT=0; G._tutOrders=false;
+  if(G.music) startMusic();
   startVis=false;
   const s=document.getElementById('start');s.style.transition='opacity .35s';s.style.opacity='0';
   setTimeout(()=>s.style.display='none',360);
   setInterval(save,5000);
+  // first-time players see the how-to automatically
+  if(!localStorage.getItem('ivt_howto')){ openHowto(); localStorage.setItem('ivt_howto','1'); }
   setTimeout(()=>{
     checkDailyStreak();
   },800);
